@@ -1,4 +1,4 @@
-<?
+<?php
 function stringarPagantes($values)
 {
   $res;
@@ -52,25 +52,25 @@ session_expired();
       <ul>
         <li><a href="./MinhasListas.php">Minhas Listas</a></li>
         <li><a href="./criarlista.php">Criar Lista</a></li>
-        <? if($_SESSION['SU']==1) echo "<li><a href=\"./lista.php\">Listar Users</a></li>"; ?>
+        <?php if($_SESSION['SU']==1) echo "<li><a href=\"./lista.php\">Listar Users</a></li>"; ?>
         <li><a href="./contactos.html">Contactos</a></li>
         <li class="songbut"><div type="button" onclick="backsong();" class="glyphicon glyphicon glyphicon-step-backward"></div></li>
         <li class="songbut"><div type="button" onclick="toogleplay();" class="glyphicon glyphicon-play" ></div></li>
         <li class="songbut"><div type="button" onclick="fowardsong();" class="glyphicon glyphicon-step-forward"></div></li>
         <li class="last"><a align="right" href="./logout.php"><img src="./public/images/logout.png" height="30px" width="30px"/></a></li>
         <li class="last"><a href="./altperfil.php"><img src="./public/images/edit.png" style="margin-right:10px" width="30px" height="30px"></a></li>
-        <li class="name">Bem-vindo <? echo $_SESSION['F_name']." ".$_SESSION['L_name']; ?></a></li>
+        <li class="name">Bem-vindo <?php echo $_SESSION['F_name']." ".$_SESSION['L_name']; ?></a></li>
         </ul>
     </div>
     <div align="center"><br>Para consultar as listas clique nos numeros<br>
-<?
+<?php
   $dbhost = "localhost";
   $dbuser = "root";
   $dbpass = "root";
   $dbname = "QPO";
   $mydb=mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die(mysqli_error($mydb));
   $ver=mysqli_escape_string($mydb,$_POST['Ver']);
-  $array.="<div align=center><br><form action='./criarsubmissao.php' method='post'><button type=submit height=\"60\" width=\"60\" name=sub value=".$ver."><span class=\"glyphicon glyphicon-plus-sign\"></span></button> Nova Submiss&atilde;o</form><br>";
+  $array.="<div align=center><br><form action='./criarsubmissao.php' method='post'><button type=submit height=\"60\" width=\"60\" name=Ver value=".$ver."><span class=\"glyphicon glyphicon-plus-sign\"></span></button> Nova Submiss&atilde;o</form><br>";
   $query="SELECT * FROM Submissao WHERE Nro_list=".$ver." ORDER BY Data DESC;";
   $qry_result = mysqli_query($mydb,$query) or die(mysqli_error($mydb));
   $i=1;
@@ -81,19 +81,21 @@ session_expired();
     $count=0;
     if($i==1)
     {
-      $array.="<table><th>";
+      $array.="<table><tr>";
       $query="SELECT * FROM Listas WHERE Nro_list=".$ver.";";
       $qry_result2 = mysqli_query($mydb,$query) or die(mysqli_error($mydb));
       while($row2 = mysqli_fetch_array($qry_result2))
       {
         $query="SELECT * FROM Users WHERE Nro_User=".$row2['Nro_User'].";";
         $qry_result3 = mysqli_query($mydb,$query) or die(mysqli_error($mydb));
-        $row3 = mysqli_fetch_array($qry_result3);
-        $array .="<th>".$row3['F_name']." ".$row3['L_name']."</th>\n";
-        $novo[$count]=$row2['Saldo']/100;
-        $count++;
+        if($row3 = mysqli_fetch_array($qry_result3))
+        {
+          $array .="<th>".$row3['F_name']." ".$row3['L_name']."</th>\n";
+          $novo[$count]=$row2['Saldo']/100;
+          $count++;
+        }
       }
-        $array.="</th>\n<tr>\n";
+        $array.="</tr>\n<tr>\n";
       for($j=0;$j<$count;$j++)
       {
         if($novo[$j]<0)
@@ -116,7 +118,7 @@ session_expired();
     $row2 = mysqli_fetch_array($qry_result2);
     if($row['Eliminada'] == 1)
     {
-      $array.="<tr class=strikeout>\n<td>".$row2['F_name']." ".$row2['L_name']."</td>\n<td>".$row['Data']."</td>\n<td>".$valor." &#8364;</td>\n<td>".$row['Descricao']."</td>\n<td>";
+      $array.="<tr class=del>\n<td>".$row2['F_name']." ".$row2['L_name']."</td>\n<td>".$row['Data']."</td>\n<td>".$valor." &#8364;</td>\n<td>".$row['Descricao']."</td>\n<td>";
       $array.=stringarPagantes($persons);
       $array.="</td>\n<td><input type=image src=./public/images/delete.png onclick=\"return false;\" alt=\"novo\" padding=\"none\" height=\"20\" name=eliminar value=x></td>\n</tr>";
     }
@@ -134,7 +136,7 @@ session_expired();
   }
   else
   {
-    $array.="\n</form>\n</table>";
+    $array.="\n<input type=hidden name=Ver value=".$ver."></form>\n</table>";
   }
   $array .= "<br><form action='./adduser.php' method='post'><button type=submit height=\"60\" width=\"60\" name=sub value=".$ver."><span class=\"glyphicon glyphicon-plus-sign\"></span></button>  Adicionar novo utilizador a lista<input type=hidden name=lista value=".$ver."></form><br><br>";
   if($i!=1)

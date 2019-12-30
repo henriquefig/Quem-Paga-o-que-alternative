@@ -1,4 +1,4 @@
-<?
+<?php
   include('session_timeout.php');
   session_start();
   session_expired();
@@ -36,7 +36,7 @@
 <div align="center">
 <h1>Login</h1>
 <form method="post" action="./main.php">
-  <?  if(isset($_GET['error']))
+  <?php  if(isset($_GET['error']))
         echo "<h2 align=center color=#ff800>Erro credenciais inv&aacute;lidas!!!</h2>"; ?>
   Email: <input type="text" name="email" placeholder="Email"><br>
   Password: <input type="password" name="password" placeholder="Password"><br>

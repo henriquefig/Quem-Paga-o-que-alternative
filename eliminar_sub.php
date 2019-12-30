@@ -1,4 +1,4 @@
-<?
+<?php
 	include('session_timeout.php');
   session_start();
   session_expired();
@@ -23,18 +23,18 @@
       <ul>
         <li><a href="./MinhasListas.php">Minhas Listas</a></li>
         <li><a href="./criarlista.php">Criar Lista</a></li>
-        <? if($_SESSION['SU']==1) echo "<li><a href=\"./lista.php\">Listar Users</a></li>"; ?>
+        <?php if($_SESSION['SU']==1) echo "<li><a href=\"./lista.php\">Listar Users</a></li>"; ?>
         <li><a href="./contactos.html">Contactos</a></li>
         <li class="songbut"><div type="button" onclick="backsong();" class="glyphicon glyphicon glyphicon-step-backward"></div></li>
         <li class="songbut"><div type="button" onclick="toogleplay();" class="glyphicon glyphicon-play" ></div></li>
         <li class="songbut"><div type="button" onclick="fowardsong();" class="glyphicon glyphicon-step-forward"></div></li>
         <li class="last"><a align="right" href="./logout.php"><img src="./public/images/logout.png" height="30px" width="30px"/></a></li>
         <li class="last"><a href="./altperfil.php"><img src="./public/images/edit.png" style="margin-right:10px" width="30px" height="30px"></a></li>
-        <li class="name">Bem-vindo <? echo $_SESSION['F_name']." ".$_SESSION['L_name']; ?></a></li>
+        <li class="name">Bem-vindo <?php echo $_SESSION['F_name']." ".$_SESSION['L_name']; ?></a></li>
         </ul>
     </div>
     <br><div align="center">
-<?
+<?php
 	$dbhost = "localhost";
 	$dbuser = "root";
 	$dbpass = "root";
@@ -44,11 +44,12 @@
 	{
    		$ver=mysqli_escape_string($mydb,$_POST['Ver']);
    	 	$eliminar=mysqli_escape_string($mydb,$_POST['eliminar']);
-		$array="<b>Submiss&atilde;o eliminada com sucesso!</b><br><input type=image src=\"/images/mais.jpeg\"  alt=\"novo\" padding=\"none\" height=\"20\" name=sub value=".$ver.">Nova Submiss&atilde;o<br><br><br>";
+		$array="<b>Submiss&atilde;o eliminada com sucesso!</b><br><form action=\"./criarsubmissao.php\" method=\"post\"><button type=\"submit\" height=\"60\" width=\"60\" name=\"Ver\" value=".$ver."><span class=\"glyphicon glyphicon-plus-sign\"></span></button> Nova Submissão</form><br><br><br>";
 		$query="SELECT * FROM Submissao where Sub_id=".$eliminar.";";
 		$qry_result = mysqli_query($mydb,$query) or die(mysqli_error($mydb));
 		$row = mysqli_fetch_array($qry_result);
 		$mult=split(',',$row['Pagantes']);
+		array_pop($mult);
 		$div=0;
 		foreach($mult as $val) 
 		{
@@ -69,7 +70,7 @@
 			}
 			else
 			{
-				$valor=($rrow2['Saldo']+$novosaldo);
+				$valor=($row2['Saldo']+$novosaldo);
 			}
 			$query="UPDATE Listas SET Saldo=".$valor." Where Nro_list=".$row['Nro_list']." AND Nro_User=".$multi[1].";";
 			$qry_result = mysqli_query($mydb,$query) or die(mysqli_error($mydb));
